@@ -292,8 +292,8 @@ namespace Wdw.UserManagement.v2.User_Management
                         }
                         else
                         {
-                            // string childPath = string.Format("{0}/{1}", BusinessLayer.GetString(oRow[Constants.Group.GROUP_NAME]), deptNbr);
-                            string childPath = string.Format("{0}/{1}", BusinessLayer.GetString(oRow[Constants.Group.GROUP_NAME]), deptNbrName);
+                            string childPath = string.Format("{0} /{1}", BusinessLayer.GetString(oRow[Constants.Group.GROUP_NAME]), deptNbr);
+                            // string childPath = string.Format("{0}/{1}", BusinessLayer.GetString(oRow[Constants.Group.GROUP_NAME]), deptNbrName);
 
                             if (deptName.Length > 0 && deptNbr.Length > 0)
                             {
