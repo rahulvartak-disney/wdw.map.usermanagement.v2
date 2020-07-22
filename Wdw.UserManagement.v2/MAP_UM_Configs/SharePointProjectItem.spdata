@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ProjectItem Type="Microsoft.VisualStudio.SharePoint.Module" DefaultFile="Elements.xml" SupportedTrustLevels="All" SupportedDeploymentScopes="Web, Site" xmlns="http://schemas.microsoft.com/VisualStudio/2010/SharePointTools/SharePointProjectItemModel">
+  <Files>
+    <ProjectItemFile Source="Elements.xml" Target="MAP_UM_Configs\" Type="ElementManifest" />
+    <ProjectItemFile Source="map_um.css" Target="MAP_UM_Configs\" Type="ElementFile" />
+    <ProjectItemFile Source="loading_blue_01.png" Target="MAP_UM_Configs\" Type="ElementFile" />
+    <ProjectItemFile Source="ajax-loader-gif-6.gif" Target="MAP_UM_Configs\" Type="ElementFile" />
+    <ProjectItemFile Source="jquery-3.5.1.min.js" Target="MAP_UM_Configs\" Type="ElementFile" />
+  </Files>
+</ProjectItem>

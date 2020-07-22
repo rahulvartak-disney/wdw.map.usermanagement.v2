@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Elements xmlns="http://schemas.microsoft.com/sharepoint/">
+  <Module Name="MAP_UM_Configs"  Url="Style Library">
+    <File Path="MAP_UM_Configs\map_um.css" Url="MAP_UM_Configs/map_um.css" Type="GhostableInLibrary" />
+    <File Path="MAP_UM_Configs\loading_blue_01.png" Url="MAP_UM_Configs/loading_blue_01.png" Type="GhostableInLibrary" />
+    <File Path="MAP_UM_Configs\ajax-loader-gif-6.gif" Url="MAP_UM_Configs/ajax-loader-gif-6.gif" Type="GhostableInLibrary" />
+    <File Path="MAP_UM_Configs\jquery-3.5.1.min.js" Url="MAP_UM_Configs/jquery-3.5.1.min.js" Type="GhostableInLibrary" />
+  </Module>
+</Elements>

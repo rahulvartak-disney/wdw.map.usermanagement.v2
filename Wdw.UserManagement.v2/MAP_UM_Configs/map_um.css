@@ -1,0 +1,53 @@
+﻿.tblMain{
+    border-spacing: 15px;
+    border-collapse: separate;
+    font-size: 12pt;
+}
+.btnGeneral{
+    width: 200px;
+    cursor: pointer;
+    font-size: 12pt !important;
+}
+.btnDelete{
+    margin-left: 0px !important;
+}
+.ppAddNewUser{
+    width: 200px;
+}
+
+.overlay {
+            position: fixed;
+            z-index: 98;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            bottom: 0px;
+            background-color: #aaa;
+            filter: alpha(opacity=80);
+            opacity: 0.8;
+}
+.overlayContent {
+    z-index: 99;
+    margin: 250px auto;
+    width: 100px;
+    height: 100px;
+}
+.overlayContent h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    font-family: 'Segoe UI';
+}
+.overlayContent img {
+    width: 80px;
+    height: 80px;
+}
+div.dvDeptSelection{
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 300px;
+    width: 95%;
+}
+.chkSelectAll{
+    margin-left: 20px;
+}
