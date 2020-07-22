@@ -41,6 +41,11 @@
         if (o.tagName == "INPUT" && o.type == "checkbox") {
             __doPostBack('<%=btnHiddenPostBack.ClientID %>', null);            
         }
+
+        if (!src.checked) {
+            var chkSelectAll = document.getElementById('<%= chkSelectAll.ClientID %>');
+            chkSelectAll.checked = false;
+        }
     } 
 
     function CheckUncheckChildren(childContainer, check, ddlDefaultDept) {
