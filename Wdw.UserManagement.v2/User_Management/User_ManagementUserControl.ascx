@@ -314,6 +314,33 @@ function btnSubmit_ClientClick(){
          }                    
          __doPostBack('<%=btnHiddenNewUserPostBack.ClientID %>', null);
      }
+
+    function chkSelectAll_ClientClicked(IsClicked){
+        console.log('1');
+        var tvDepts = document.getElementById('<%= tvDepts.ClientID %>');
+        var ddlDefaultDept = document.getElementById('<%= ddlDefaultDept.ClientID %>');
+        if (null != tvDepts) {
+            var allNodes = tvDepts.getElementsByTagName("input");            
+            if (null != allNodes && allNodes.length > 0) {
+                for (var index = 0; index < allNodes.length; index++) {
+                    var parentTable = GetParentByTagName("table", allNodes[index]);                    
+                    var nxtSibling = parentTable.nextSibling;                    
+                    //check if nxt sibling is not null & is an element node
+                    if (nxtSibling && nxtSibling.nodeType == 1) {
+                        //if node has children   
+                        if (nxtSibling.tagName.toLowerCase() == "div") {
+                            //check or uncheck children at all levels    
+                            console.log("inside " + index);
+                            CheckUncheckChildren(parentTable.nextSibling, IsClicked, ddlDefaultDept);
+                        }
+                    }
+                    allNodes[index].checked = IsClicked;
+                }
+            }
+        }
+
+        console.log('2');
+    }
 </script>
 
 <asp:UpdatePanel ID="upManageUsers" runat="server">
@@ -338,10 +365,11 @@ function btnSubmit_ClientClick(){
                 <td colspan="2" style="vertical-align: top;">
                     <div class="dvDeptSelection" runat="server" id="dvDeptSelection">
                         <b>MAP Departments</b><br /><br />
-                        <asp:CheckBox ID="chkSelectAll" Text="All Departments" OnCheckedChanged="chkSelectAll_CheckedChanged" CssClass="chkSelectAll" AutoPostBack="true" runat="server" />                        
+                        <asp:CheckBox ID="chkSelectAll" Text="All Departments" onclick="chkSelectAll_ClientClicked(this.checked);" CssClass="chkSelectAll" AutoPostBack="true" runat="server" />                        
                         <asp:TreeView ID="tvDepts"  runat="server" ForeColor="Black" Font-Size="12pt" ShowCheckBoxes="All" OnClick="OnTreeClick(event)"></asp:TreeView>
                         <span style="display: none;">
                             <asp:Button ID="btnHiddenPostBack" runat="server" Text="Hidden" OnClick="btnHiddenPostBack_Click" />
+                            <asp:Button ID="btnHiddenSelectAllPostBack" runat="server" Text="Hidden" OnClick="btnHiddenSelectAllPostBack_Click" />
                             <asp:TextBox ID="txtCheckedDeptText" runat="server" Text=""></asp:TextBox>
                             <asp:TextBox ID="txtCheckedDeptValue" runat="server" Text=""></asp:TextBox>
                             <asp:Button ID="btnHiddenNewUserPostBack" runat="server" Text="HiddenNewUser" OnClick="btnHiddenNewUserPostBack_Click" />

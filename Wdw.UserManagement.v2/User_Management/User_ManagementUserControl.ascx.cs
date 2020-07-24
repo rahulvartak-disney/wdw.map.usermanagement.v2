@@ -287,7 +287,8 @@ namespace Wdw.UserManagement.v2.User_Management
                             {
                                 oNode.Checked = true;
                                 CheckUncheckChildItems(oNode, chkSelectAll.Checked);
-                            }                            
+                            }
+                            UpdateDefaultDeptDropdown();
                             break;
                         }
                         else
@@ -364,12 +365,12 @@ namespace Wdw.UserManagement.v2.User_Management
         {
             try
             {                
-                foreach (TreeNode oNode in tvDepts.Nodes)
-                {
-                    oNode.Checked = chkSelectAll.Checked;
-                    CheckUncheckChildItems(oNode, chkSelectAll.Checked);
-                }
-                BusinessLayer.SortDropdown(ddlDefaultDept);
+                //foreach (TreeNode oNode in tvDepts.Nodes)
+                //{
+                //    oNode.Checked = chkSelectAll.Checked;
+                //    CheckUncheckChildItems(oNode, chkSelectAll.Checked);
+                //}
+                // BusinessLayer.SortDropdown(ddlDefaultDept);
             }
             catch (Exception ex)
             {
@@ -469,6 +470,58 @@ namespace Wdw.UserManagement.v2.User_Management
             catch(Exception ex)
             {
                 BusinessLayer.LogMessage(ex, "User_ManagementUserControl.btnHiddenNewUserPostBack_Click");
+            }
+        }
+
+        protected void btnHiddenSelectAllPostBack_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                BusinessLayer.LogMessage(new Exception("testing"), "testing");
+                foreach (TreeNode oNode in tvDepts.Nodes)
+                {
+                    oNode.Checked = chkSelectAll.Checked;
+                    CheckUncheckChildItems(oNode, chkSelectAll.Checked);
+                }
+                // BusinessLayer.SortDropdown(ddlDefaultDept);
+            }
+            catch (Exception ex)
+            {
+                BusinessLayer.LogMessage(ex, "User_ManagementUserControl.btnHiddenSelectAllPostBack_Click");
+            }
+        }
+
+        protected void UpdateDefaultDeptDropdown()
+        {
+            try
+            {
+                foreach(TreeNode parentNode in tvDepts.Nodes)
+                {
+                    foreach (TreeNode childNode in parentNode.ChildNodes)
+                    {                         
+                        if (childNode.Checked)
+                        {
+                            if (!ddlDefaultDept.Items.Contains(new ListItem(childNode.Text, childNode.Value)))
+                                ddlDefaultDept.Items.Add(new ListItem(childNode.Text, childNode.Value));
+                            if (childNode.Value != "-1" && ddlDefaultDept.Items.Contains(new ListItem("No Department Selected", "-1")))
+                            {
+                                ddlDefaultDept.Items.Remove(new ListItem("No Department Selected", "-1"));
+                            }
+                        }
+                        else
+                        {
+                            ddlDefaultDept.Items.Remove(new ListItem(childNode.Text, childNode.Value));
+                            if (ddlDefaultDept.Items.Count == 0)
+                            {
+                                ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
+                            }
+                        }
+                    }
+                }                
+            }
+            catch (Exception ex)
+            {
+                BusinessLayer.LogMessage(ex, "");
             }
         }
     }

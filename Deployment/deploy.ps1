@@ -44,7 +44,7 @@ try
 	
 	$slnFlag = Get-SPSolution -Identity $solution
 	if ($slnFlag -eq $null) {
-	Add-SPSolution "D:\Rahul\Code\MBIA-IT\MAP User Management Webpart\Wdw.UserManagement.v2\Deployment\Wdw.UserManagement.v2.wsp"
+	Add-SPSolution "C:\Users\rvartak\Source\Repos\rahulvartak-disney\wdw.map.usermanagement.v2\Deployment\Wdw.UserManagement.v2.wsp"
 	Start-Sleep -Seconds 2
 	Write-Host "`n$solution Added Sucessfully…"
 	Install-SPSolution -Identity $solution -WebApplication http://spdev.mbia.disney.com/ -GACDeployment
