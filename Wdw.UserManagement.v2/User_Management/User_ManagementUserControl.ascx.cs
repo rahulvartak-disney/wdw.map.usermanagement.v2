@@ -10,8 +10,6 @@ namespace Wdw.UserManagement.v2.User_Management
 {
     public partial class User_ManagementUserControl : UserControl
     {
-        bool firstLoad_DeptSelection;
-
         protected void Page_Load(object sender, EventArgs e)
         {
             try
@@ -271,6 +269,7 @@ namespace Wdw.UserManagement.v2.User_Management
                 DataSet dsResult = DataLayer.getUserAllocations(ddlSelectUser.SelectedValue);
                 if (dsResult.Tables.Count > 2)
                 {
+                    // Set selected Modules
                     foreach (DataRow oRow in dsResult.Tables[1].Rows) 
                         foreach(ListItem oItem in chklstModules.Items)                        
                             if (oItem.Text.Equals(BusinessLayer.GetString(oRow[Constants.Modules.NAME]), StringComparison.InvariantCultureIgnoreCase))
@@ -292,15 +291,12 @@ namespace Wdw.UserManagement.v2.User_Management
                             {
                                 oNode.Checked = true;
                                 CheckUncheckChildItems(oNode, chkSelectAll.Checked);
-                            }
-                            // UpdateDefaultDeptDropdown();
+                            }                            
                             break;
                         }
                         else
                         {
-                            string childPath = string.Format("{0} /{1}", BusinessLayer.GetString(oRow[Constants.Group.GROUP_NAME]), deptNbr);
-                            // string childPath = string.Format("{0}/{1}", BusinessLayer.GetString(oRow[Constants.Group.GROUP_NAME]), deptNbrName);
-
+                            string childPath = string.Format("{0} /{1}", BusinessLayer.GetString(oRow[Constants.Group.GROUP_NAME]), deptNbr); 
                             if (deptName.Length > 0 && deptNbr.Length > 0)
                             {
                                 TreeNode toBeSelected = tvDepts.FindNode(childPath);
@@ -323,17 +319,14 @@ namespace Wdw.UserManagement.v2.User_Management
                         }                       
                     }
 
+                    CheckUncheckParentNodes();
                     BusinessLayer.SortDropdown(ddlDefaultDept);
-                    
-                    
 
                     string defaultDeptName =  BusinessLayer.GetString( dsResult.Tables[2].Rows[0][Constants.Users.DEFAULT_DEPT_NAME]);
                     string defaultDeptNbr = BusinessLayer.GetString(dsResult.Tables[2].Rows[0][Constants.Users.DEFAULT_DEPT_NBR]);
                     ddlDefaultDept.ClearSelection();
-                    if(ddlDefaultDept.Items.Contains(new ListItem(defaultDeptName, defaultDeptNbr)))
-                    {
-                        ddlDefaultDept.Items.FindByValue(defaultDeptNbr).Selected = true;
-                    }
+                    if(ddlDefaultDept.Items.Contains(new ListItem(defaultDeptName, defaultDeptNbr)))                    
+                        ddlDefaultDept.Items.FindByValue(defaultDeptNbr).Selected = true;                    
                 }
                 btnNewUser.Enabled = false;
             }
@@ -460,8 +453,7 @@ namespace Wdw.UserManagement.v2.User_Management
                 //    BusinessLayer.SortDropdown(ddlDefaultDept);
                 //    UncheckSelectAll();
                 //} 
-
-                firstLoad_DeptSelection = false;
+                
                 UpdateDeptSelections();
 
             }
@@ -579,6 +571,17 @@ namespace Wdw.UserManagement.v2.User_Management
             catch (Exception ex)
             {
                 BusinessLayer.LogMessage(ex, "");
+            }
+        }
+
+        protected void CheckUncheckParentNodes()
+        {
+            foreach(TreeNode pNode in tvDepts.Nodes)
+            {
+                bool toBeChecked = true;
+                foreach (TreeNode cNode in pNode.ChildNodes)
+                    if (!cNode.Checked) toBeChecked = false;
+                pNode.Checked = toBeChecked;
             }
         }
     }
