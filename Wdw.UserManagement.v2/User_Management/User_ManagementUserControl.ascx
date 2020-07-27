@@ -18,45 +18,63 @@
         var txtCheckedDeptText = document.getElementById('<%= txtCheckedDeptText.ClientID %>');
         var txtCheckedDeptValue = document.getElementById('<%= txtCheckedDeptValue.ClientID %>');
         
-        if (isChkBoxClick) {            
+        if (isChkBoxClick) {
+            console.log('2.0');
             var nodeText = getNextSibling(src).innerText || getNextSibling(src).innerHTML;
             txtCheckedDeptText.value = nodeText;
             var nodeValue = GetNodeValue(getNextSibling(src));
             txtCheckedDeptValue.value = nodeValue;
 
-            var parentTable = GetParentByTagName("table", src);            
-            var nxtSibling = parentTable.nextSibling;            
-            //check if nxt sibling is not null & is an element node
-            if (nxtSibling && nxtSibling.nodeType == 1) {
-                //if node has children   
-                if (nxtSibling.tagName.toLowerCase() == "div") {
-                    //check or uncheck children at all levels                    
-                    CheckUncheckChildren(parentTable.nextSibling, src.checked, ddlDefaultDept);
-            }
-        }
+            //var parentTable = GetParentByTagName("table", src);            
+            //var nxtSibling = parentTable.nextSibling;            
+            ////check if nxt sibling is not null & is an element node
+            //if (nxtSibling && nxtSibling.nodeType == 1) {
+            //    //if node has children   
+            //    if (nxtSibling.tagName.toLowerCase() == "div") {
+            //        //check or uncheck children at all levels                    
+            //        console.log('3.0');
+            //        CheckUncheckChildren(parentTable.nextSibling, src.checked, ddlDefaultDept);
+            //        console.log('4.0');
+            //    }
+            //    else if (nxtSibling.tagName.toLowerCase() == "table") {
+            //        console.log("child node clicked....Do things here...");
+            //        CheckUncheckNode(src, src.checked, ddlDefaultDept);
+            //    }
+            //}
+
         //check or uncheck parents at all levels
-        CheckUncheckParents(src, src.checked);
-        }
-        var o = window.event.srcElement;
-        if (o.tagName == "INPUT" && o.type == "checkbox") {
-            __doPostBack('<%=btnHiddenPostBack.ClientID %>', null);            
+        // CheckUncheckParents(src, src.checked);            
         }
 
-        if (!src.checked) {
+
+        var o = window.event.srcElement;
+        if (o.tagName == "INPUT" && o.type == "checkbox") {            
+            __doPostBack('<%=btnHiddenPostBack.UniqueID %>', null);       
+        }        
+
+        return false;
+
+        <%--if (!src.checked) {
             var chkSelectAll = document.getElementById('<%= chkSelectAll.ClientID %>');
             chkSelectAll.checked = false;
-        }
+        }--%>
     } 
 
     function CheckUncheckChildren(childContainer, check, ddlDefaultDept) {
-    var childChkBoxes = childContainer.getElementsByTagName("input");
-    var childChkBoxCount = childChkBoxes.length;
-    for (var i = 0; i < childChkBoxCount; i++) {
-        childChkBoxes[i].checked = check;        
-        if (check) AddToDropdown(ddlDefaultDept, getNextSibling(childChkBoxes[i]).innerText, GetNodeValue(getNextSibling(childChkBoxes[i])));
-        else RemoveFromDropdown(ddlDefaultDept, getNextSibling(childChkBoxes[i]).innerText, GetNodeValue(getNextSibling(childChkBoxes[i])));
+        var childChkBoxes = childContainer.getElementsByTagName("input");
+        var childChkBoxCount = childChkBoxes.length;
+        for (var i = 0; i < childChkBoxCount; i++) {
+            childChkBoxes[i].checked = check;        
+            if (check) AddToDropdown(ddlDefaultDept, getNextSibling(childChkBoxes[i]).innerText, GetNodeValue(getNextSibling(childChkBoxes[i])));
+            else RemoveFromDropdown(ddlDefaultDept, getNextSibling(childChkBoxes[i]).innerText, GetNodeValue(getNextSibling(childChkBoxes[i])));
+        }
     }
-} 
+
+    function CheckUncheckNode(oNode, check, ddlDefaultDept) {        
+        oNode.checked = check;
+        if (check) AddToDropdown(ddlDefaultDept, getNextSibling(oNode).innerText, GetNodeValue(getNextSibling(oNode)));
+        else RemoveFromDropdown(ddlDefaultDept, getNextSibling(oNode).innerText, GetNodeValue(getNextSibling(oNode)));       
+    }
 
 function CheckUncheckParents(srcChild, check) {   
     var parentDiv = GetParentByTagName("div", srcChild);
@@ -274,7 +292,7 @@ function btnSubmit_ClientClick(){
     }
 
      var xPos, yPos;
-      var prm = Sys.WebForms.PageRequestManager.getInstance();
+     var prm = Sys.WebForms.PageRequestManager.getInstance();
 
       function BeginRequestHandler(sender, args) {
         if ($get('<%=dvDeptSelection.ClientID%>') != null) {
@@ -293,8 +311,13 @@ function btnSubmit_ClientClick(){
          }
      }
 
-     prm.add_beginRequest(BeginRequestHandler);
-     prm.add_endRequest(EndRequestHandler);
+    if (null != prm)
+    {
+        prm.add_beginRequest(BeginRequestHandler);
+        prm.add_endRequest(EndRequestHandler);
+    }
+
+    
 
      function NewUser_PostBack() {
          var ppNewUser = document.getElementById('<%= ppNewUser.ClientID %>');
@@ -312,11 +335,11 @@ function btnSubmit_ClientClick(){
                  }
              }
          }                    
-         __doPostBack('<%=btnHiddenNewUserPostBack.ClientID %>', null);
+         __doPostBack('<%=btnHiddenNewUserPostBack.UniqueID %>', null);
+         return false;
      }
 
     function chkSelectAll_ClientClicked(IsClicked){
-        console.log('1');
         var tvDepts = document.getElementById('<%= tvDepts.ClientID %>');
         var ddlDefaultDept = document.getElementById('<%= ddlDefaultDept.ClientID %>');
         if (null != tvDepts) {
@@ -329,17 +352,14 @@ function btnSubmit_ClientClick(){
                     if (nxtSibling && nxtSibling.nodeType == 1) {
                         //if node has children   
                         if (nxtSibling.tagName.toLowerCase() == "div") {
-                            //check or uncheck children at all levels    
-                            console.log("inside " + index);
+                            //check or uncheck children at all levels                                
                             CheckUncheckChildren(parentTable.nextSibling, IsClicked, ddlDefaultDept);
                         }
                     }
                     allNodes[index].checked = IsClicked;
                 }
             }
-        }
-
-        console.log('2');
+        }        
     }
 </script>
 

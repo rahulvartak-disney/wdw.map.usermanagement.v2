@@ -9,7 +9,9 @@ using Wdw.UserManagement.v2.Code;
 namespace Wdw.UserManagement.v2.User_Management
 {
     public partial class User_ManagementUserControl : UserControl
-    {        
+    {
+        bool firstLoad_DeptSelection;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             try
@@ -274,7 +276,10 @@ namespace Wdw.UserManagement.v2.User_Management
                             if (oItem.Text.Equals(BusinessLayer.GetString(oRow[Constants.Modules.NAME]), StringComparison.InvariantCultureIgnoreCase))
                                 oItem.Selected = true;
 
+                    chkSelectAll.Checked = false;
                     BusinessLayer.UncheckAllNodes(tvDepts.Nodes);
+
+
                     foreach(DataRow oRow in dsResult.Tables[0].Rows)
                     {
                         string deptName = BusinessLayer.GetString(oRow[Constants.Department.DEPT_NAME]);
@@ -288,7 +293,7 @@ namespace Wdw.UserManagement.v2.User_Management
                                 oNode.Checked = true;
                                 CheckUncheckChildItems(oNode, chkSelectAll.Checked);
                             }
-                            UpdateDefaultDeptDropdown();
+                            // UpdateDefaultDeptDropdown();
                             break;
                         }
                         else
@@ -319,6 +324,8 @@ namespace Wdw.UserManagement.v2.User_Management
                     }
 
                     BusinessLayer.SortDropdown(ddlDefaultDept);
+                    
+                    
 
                     string defaultDeptName =  BusinessLayer.GetString( dsResult.Tables[2].Rows[0][Constants.Users.DEFAULT_DEPT_NAME]);
                     string defaultDeptNbr = BusinessLayer.GetString(dsResult.Tables[2].Rows[0][Constants.Users.DEFAULT_DEPT_NBR]);
@@ -336,7 +343,7 @@ namespace Wdw.UserManagement.v2.User_Management
             }
         }        
 
-        private void CheckUncheckSelectAll()
+        private void UncheckSelectAll()
         {
             foreach (TreeNode oNode in tvDepts.Nodes)
             {
@@ -407,53 +414,56 @@ namespace Wdw.UserManagement.v2.User_Management
         {
             try
             {
-                TreeNode nodeChecked = new TreeNode();
-                bool nodeFound = false;
-                foreach(TreeNode pNode in tvDepts.Nodes)
-                {
-                    if(pNode.Text.Equals(txtCheckedDeptText.Text) && pNode.Value.Equals(txtCheckedDeptValue.Text))
-                    {
-                        nodeChecked = pNode;
-                        nodeFound = true;
-                        break;
-                    }
-                    foreach(TreeNode cNode in pNode.ChildNodes)
-                    {
-                        if (cNode.Text.Equals(txtCheckedDeptText.Text) && cNode.Value.Equals(txtCheckedDeptValue.Text))
-                        {
-                            nodeChecked = cNode;
-                            nodeFound = true;
-                            break;
-                        }
-                    }
-                    if (nodeFound)
-                        break;
+                //TreeNode nodeChecked = new TreeNode();
+                //bool nodeFound = false;
+                //foreach(TreeNode pNode in tvDepts.Nodes)
+                //{
+                //    if(pNode.Text.Equals(txtCheckedDeptText.Text) && pNode.Value.Equals(txtCheckedDeptValue.Text))
+                //    {
+                //        nodeChecked = pNode;
+                //        nodeFound = true;
+                //        break;
+                //    }
+                //    foreach(TreeNode cNode in pNode.ChildNodes)
+                //    {
+                //        if (cNode.Text.Equals(txtCheckedDeptText.Text) && cNode.Value.Equals(txtCheckedDeptValue.Text))
+                //        {
+                //            nodeChecked = cNode;
+                //            nodeFound = true;
+                //            break;
+                //        }
+                //    }
+                //    if (nodeFound)
+                //        break;
 
-                }
+                //}
 
-                if (nodeFound)
-                {
-                    if (nodeChecked.Checked && nodeChecked.Depth > 0)
-                    {
-                        if (!ddlDefaultDept.Items.Contains(new ListItem(nodeChecked.Text, nodeChecked.Value)))
-                            ddlDefaultDept.Items.Add(new ListItem(nodeChecked.Text, nodeChecked.Value));
-                        if (nodeChecked.Value != "-1" && ddlDefaultDept.Items.Contains(new ListItem("No Department Selected", "-1")))
-                        {
-                            ddlDefaultDept.Items.Remove(new ListItem("No Department Selected", "-1"));
-                        }
-                    }
-                    else if (!nodeChecked.Checked && nodeChecked.Depth > 0)
-                    {
-                        ddlDefaultDept.Items.Remove(new ListItem(nodeChecked.Text, nodeChecked.Value));
-                        if (ddlDefaultDept.Items.Count == 0)
-                        {
-                            ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
-                        }
-                    }
-                    BusinessLayer.SortDropdown(ddlDefaultDept);
-                    CheckUncheckSelectAll();
-                }
-                
+                //if (nodeFound)
+                //{
+                //    if (nodeChecked.Checked && nodeChecked.Depth > 0)
+                //    {
+                //        if (!ddlDefaultDept.Items.Contains(new ListItem(nodeChecked.Text, nodeChecked.Value)))
+                //            ddlDefaultDept.Items.Add(new ListItem(nodeChecked.Text, nodeChecked.Value));
+                //        if (nodeChecked.Value != "-1" && ddlDefaultDept.Items.Contains(new ListItem("No Department Selected", "-1")))
+                //        {
+                //            ddlDefaultDept.Items.Remove(new ListItem("No Department Selected", "-1"));
+                //        }
+                //    }
+                //    else if (!nodeChecked.Checked && nodeChecked.Depth > 0)
+                //    {
+                //        ddlDefaultDept.Items.Remove(new ListItem(nodeChecked.Text, nodeChecked.Value));
+                //        if (ddlDefaultDept.Items.Count == 0)
+                //        {
+                //            ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
+                //        }
+                //    }
+                //    BusinessLayer.SortDropdown(ddlDefaultDept);
+                //    UncheckSelectAll();
+                //} 
+
+                firstLoad_DeptSelection = false;
+                UpdateDeptSelections();
+
             }
             catch(Exception ex)
             {
@@ -491,33 +501,80 @@ namespace Wdw.UserManagement.v2.User_Management
             }
         }
 
-        protected void UpdateDefaultDeptDropdown()
+        protected void UpdateDeptSelections()
         {
             try
             {
-                foreach(TreeNode parentNode in tvDepts.Nodes)
+                string selectedDefaultDept = ddlDefaultDept.SelectedValue;
+
+                foreach (TreeNode parentNode in tvDepts.Nodes)
                 {
-                    foreach (TreeNode childNode in parentNode.ChildNodes)
-                    {                         
-                        if (childNode.Checked)
+                    if (parentNode.Checked && parentNode.Value.Equals(txtCheckedDeptValue.Text))
+                    {
+                        foreach (TreeNode childNode in parentNode.ChildNodes)
                         {
-                            if (!ddlDefaultDept.Items.Contains(new ListItem(childNode.Text, childNode.Value)))
-                                ddlDefaultDept.Items.Add(new ListItem(childNode.Text, childNode.Value));
-                            if (childNode.Value != "-1" && ddlDefaultDept.Items.Contains(new ListItem("No Department Selected", "-1")))
+                            if (!childNode.Checked) 
                             {
-                                ddlDefaultDept.Items.Remove(new ListItem("No Department Selected", "-1"));
+                                childNode.Checked = true;
+                                if (!ddlDefaultDept.Items.Contains(new ListItem(childNode.Text, childNode.Value)))
+                                    ddlDefaultDept.Items.Add(new ListItem(childNode.Text, childNode.Value));
+                                if (childNode.Value != "-1" && ddlDefaultDept.Items.Contains(new ListItem("No Department Selected", "-1")))
+                                {
+                                    ddlDefaultDept.Items.Remove(new ListItem("No Department Selected", "-1"));
+                                }
                             }
-                        }
-                        else
+                        }                           
+                    }
+                    else if (!parentNode.Checked && parentNode.Value.Equals(txtCheckedDeptValue.Text))
+                    {
+                        foreach (TreeNode childNode in parentNode.ChildNodes)
                         {
-                            ddlDefaultDept.Items.Remove(new ListItem(childNode.Text, childNode.Value));
-                            if (ddlDefaultDept.Items.Count == 0)
+                            if (childNode.Checked)
                             {
-                                ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
-                            }
+                                childNode.Checked = false;
+                                ddlDefaultDept.Items.Remove(new ListItem(childNode.Text, childNode.Value));
+                                if (ddlDefaultDept.Items.Count == 0)
+                                {
+                                    ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
+                                }
+                            }                            
                         }
                     }
-                }                
+                    else
+                    {
+                        foreach (TreeNode childNode in parentNode.ChildNodes)
+                        {
+                            if (childNode.Checked && childNode.Value.Equals(txtCheckedDeptValue.Text))
+                            {
+                                if (!ddlDefaultDept.Items.Contains(new ListItem(childNode.Text, childNode.Value)))
+                                    ddlDefaultDept.Items.Add(new ListItem(childNode.Text, childNode.Value));
+                                if (childNode.Value != "-1" && ddlDefaultDept.Items.Contains(new ListItem("No Department Selected", "-1")))
+                                {
+                                    ddlDefaultDept.Items.Remove(new ListItem("No Department Selected", "-1"));
+                                }
+                            }
+                            else if(!childNode.Checked && childNode.Value.Equals(txtCheckedDeptValue.Text))
+                            {
+                                ddlDefaultDept.Items.Remove(new ListItem(childNode.Text, childNode.Value));
+                                if (ddlDefaultDept.Items.Count == 0)
+                                {
+                                    ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
+                                }
+                            }
+                        }
+                    }                   
+                }
+
+                BusinessLayer.SortDropdown(ddlDefaultDept);
+
+                ListItem selectedItem = ddlDefaultDept.Items.FindByValue(selectedDefaultDept);
+                if(null != selectedItem)
+                {
+                    ddlDefaultDept.ClearSelection();
+                    selectedItem.Selected = true;
+                }
+
+
             }
             catch (Exception ex)
             {
