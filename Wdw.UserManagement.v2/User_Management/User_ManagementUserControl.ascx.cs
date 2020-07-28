@@ -20,7 +20,10 @@ namespace Wdw.UserManagement.v2.User_Management
                     Load_UserNames();
                     Load_MAPModules();
                     Load_Selected_Departments("onload");
-                    Populate_DeptTreeView(); 
+                    Populate_DeptTreeView();
+                    tvDepts.Enabled = false;
+                    chklstModules.Enabled = false;
+                    chkSelectAll.Enabled = false;
                 }
                 else
                 {                   
@@ -33,7 +36,10 @@ namespace Wdw.UserManagement.v2.User_Management
                             ddlSelectUser.SelectedValue = "-2";
                             ddlSelectUser.Enabled = false;
                             btnNewUser.Enabled = false;
-                        }                    
+                            tvDepts.Enabled = true;
+                            chklstModules.Enabled = true;
+                            chkSelectAll.Enabled = true;
+                    }                    
                 }
             }
             catch(Exception ex)
@@ -270,6 +276,9 @@ namespace Wdw.UserManagement.v2.User_Management
         {
             try
             {
+                tvDepts.Enabled = true;
+                chklstModules.Enabled = true;
+                chkSelectAll.Enabled = true;
                 chklstModules.ClearSelection();
                 DataSet dsResult = DataLayer.getUserAllocations(ddlSelectUser.SelectedValue);
                 if (dsResult.Tables.Count > 2)
@@ -393,6 +402,9 @@ namespace Wdw.UserManagement.v2.User_Management
         {
             try
             {
+                tvDepts.Enabled = true;
+                chklstModules.Enabled = true;
+                chkSelectAll.Enabled = true;
                 btnNewUser.Enabled = false;
             }
             catch(Exception ex)
@@ -401,6 +413,17 @@ namespace Wdw.UserManagement.v2.User_Management
             }
         }
         #endregion        
+
+        protected void btnHiddenSelectAllPostBack_Click(object sender, EventArgs e)
+        {
+            try {
+                UpdateDeptSelectionsCheckUncheckAll(chkSelectAll.Checked);
+            }
+            catch(Exception ex)
+            {
+                BusinessLayer.LogMessage(ex, "User_ManagementUserControl.btnHiddenSelectAllPostBack_Click");
+            }
+        }
 
         protected void UpdateDeptSelections()
         {
@@ -480,6 +503,111 @@ namespace Wdw.UserManagement.v2.User_Management
             catch (Exception ex)
             {
                 BusinessLayer.LogMessage(ex, "");
+            }
+        }
+
+        protected void UpdateDeptSelectionsCheckUncheckAll(bool allChecked)
+        {
+            try
+            {
+                string selectedDefaultDept = ddlDefaultDept.SelectedValue;
+
+                foreach (TreeNode parentNode in tvDepts.Nodes)
+                {
+                    foreach (TreeNode childNode in parentNode.ChildNodes)
+                    {
+                        if (allChecked && !childNode.Checked)
+                        {
+                            childNode.Checked = true;
+                            if (!ddlDefaultDept.Items.Contains(new ListItem(childNode.Text, childNode.Value)))
+                                ddlDefaultDept.Items.Add(new ListItem(childNode.Text, childNode.Value));
+                            if (childNode.Value != "-1" && ddlDefaultDept.Items.Contains(new ListItem("No Department Selected", "-1")))
+                            {
+                                ddlDefaultDept.Items.Remove(new ListItem("No Department Selected", "-1"));
+                            }
+                        }
+                        else if (!allChecked && childNode.Checked)
+                        {
+                            childNode.Checked = false;
+                            ddlDefaultDept.Items.Remove(new ListItem(childNode.Text, childNode.Value));
+                            if (ddlDefaultDept.Items.Count == 0)
+                            {
+                                ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
+                            }
+                        }
+                    }
+                }
+
+                BusinessLayer.SortDropdown(ddlDefaultDept);
+
+                ListItem selectedItem = ddlDefaultDept.Items.FindByValue(selectedDefaultDept);
+                if (null != selectedItem)
+                {
+                    ddlDefaultDept.ClearSelection();
+                    selectedItem.Selected = true;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                BusinessLayer.LogMessage(ex, "User_ManagementUserControl.UpdateDeptSelectionsCheckUncheckAll");
+            }
+        }
+
+        protected void ChckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                bool allChecked = chkSelectAll.Checked;
+                string selectedDefaultDept = ddlDefaultDept.SelectedValue;
+
+                foreach (TreeNode parentNode in tvDepts.Nodes)
+                {
+                    foreach (TreeNode childNode in parentNode.ChildNodes)
+                    {
+                        if (allChecked && !childNode.Checked)
+                        {
+                            childNode.Checked = true;
+                            if (!ddlDefaultDept.Items.Contains(new ListItem(childNode.Text, childNode.Value)))
+                                ddlDefaultDept.Items.Add(new ListItem(childNode.Text, childNode.Value));
+                            if (childNode.Value != "-1" && ddlDefaultDept.Items.Contains(new ListItem("No Department Selected", "-1")))
+                            {
+                                ddlDefaultDept.Items.Remove(new ListItem("No Department Selected", "-1"));
+                            }
+                        }
+                        else if (!allChecked && childNode.Checked)
+                        {
+                            childNode.Checked = false;
+                            ddlDefaultDept.Items.Remove(new ListItem(childNode.Text, childNode.Value));
+                            if (ddlDefaultDept.Items.Count == 0)
+                            {
+                                ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
+                            }
+                        }
+                    }
+
+                    
+                }
+                foreach (TreeNode parentNode in tvDepts.Nodes)
+                {
+                    parentNode.Checked = allChecked;
+                }
+
+                BusinessLayer.SortDropdown(ddlDefaultDept);
+
+                ListItem selectedItem = ddlDefaultDept.Items.FindByValue(selectedDefaultDept);
+                if (null != selectedItem)
+                {
+                    ddlDefaultDept.ClearSelection();
+                    selectedItem.Selected = true;
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                BusinessLayer.LogMessage(ex, "User_ManagementUserControl.UpdateDeptSelectionsCheckUncheckAll");
             }
         }
 

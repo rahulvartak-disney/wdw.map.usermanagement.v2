@@ -309,8 +309,12 @@ function btnSubmit_ClientClick(){
          return false;
      }
 
-    function chkSelectAll_ClientClicked(IsClicked){
-        var tvDepts = document.getElementById('<%= tvDepts.ClientID %>');
+    function chkSelectAll_ClientClicked(IsClicked) {
+        //var btnHiddenSelectAllPostBack
+         __doPostBack('<%=btnHiddenSelectAllPostBack.UniqueID %>', null);
+         return false;
+
+       <%-- var tvDepts = document.getElementById('<%= tvDepts.ClientID %>');
         var ddlDefaultDept = document.getElementById('<%= ddlDefaultDept.ClientID %>');
         if (null != tvDepts) {
             var allNodes = tvDepts.getElementsByTagName("input");            
@@ -329,7 +333,7 @@ function btnSubmit_ClientClick(){
                     allNodes[index].checked = IsClicked;
                 }
             }
-        }        
+        } --%>       
     }
 </script>
 
@@ -355,13 +359,15 @@ function btnSubmit_ClientClick(){
                 <td colspan="2" style="vertical-align: top;">
                     <div class="dvDeptSelection" runat="server" id="dvDeptSelection">
                         <b>MAP Departments</b><br /><br />
-                        <asp:CheckBox ID="chkSelectAll" Text="All Departments" onclick="chkSelectAll_ClientClicked(this.checked);" CssClass="chkSelectAll" AutoPostBack="true" runat="server" />                        
+                        <asp:CheckBox ID="chkSelectAll" Text="All Departments" OnCheckedChanged="ChckedChanged"  CssClass="chkSelectAll" AutoPostBack="true" runat="server" />  
+                                             
                         <asp:TreeView ID="tvDepts"  runat="server" ForeColor="Black" Font-Size="12pt" ShowCheckBoxes="All" OnClick="OnTreeClick(event)"></asp:TreeView>
                         <span style="display: none;">
                             <asp:Button ID="btnHiddenPostBack" runat="server" Text="Hidden" OnClick="btnHiddenPostBack_Click" />                            
                             <asp:TextBox ID="txtCheckedDeptText" runat="server" Text=""></asp:TextBox>
                             <asp:TextBox ID="txtCheckedDeptValue" runat="server" Text=""></asp:TextBox>
                             <asp:Button ID="btnHiddenNewUserPostBack" runat="server" Text="HiddenNewUser" OnClick="btnHiddenNewUserPostBack_Click" />
+                            <asp:Button ID="btnHiddenSelectAllPostBack" runat="server" Text="HiddenSelectAll" OnClick="btnHiddenSelectAllPostBack_Click" />
                         </span>
                     </div>    
                 </td>
