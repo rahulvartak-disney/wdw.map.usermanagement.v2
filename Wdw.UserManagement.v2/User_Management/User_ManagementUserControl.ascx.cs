@@ -10,6 +10,7 @@ namespace Wdw.UserManagement.v2.User_Management
 {
     public partial class User_ManagementUserControl : UserControl
     {
+        #region => Page Load Event <=
         protected void Page_Load(object sender, EventArgs e)
         {
             try
@@ -40,6 +41,8 @@ namespace Wdw.UserManagement.v2.User_Management
                 BusinessLayer.LogMessage(ex, "User_ManagementUserControl.Page_Load");
             }            
         }
+
+        #endregion
 
         private void Populate_DeptTreeView()
         {
@@ -130,8 +133,9 @@ namespace Wdw.UserManagement.v2.User_Management
                 ddlSelectUser.DataSource = dtUsers;
                 ddlSelectUser.DataBind();
             }
-        }        
+        }
 
+        #region => Delete Button Click Event <=
         protected void btnDelete_Click(object sender, EventArgs e)
         {
             try
@@ -171,12 +175,16 @@ namespace Wdw.UserManagement.v2.User_Management
                 BusinessLayer.LogMessage(ex, "User_ManagementUserControl.btnDelete_Click");
             }
         }
+        #endregion
 
+        #region => Reset Button Click Event <=
         protected void btnCancel_Click(object sender, EventArgs e)
         {
             Response.Redirect(Request.RawUrl);
         }
+        #endregion
 
+        #region => Submit Button Click Event <=
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             try
@@ -215,12 +223,8 @@ namespace Wdw.UserManagement.v2.User_Management
                 string selectedDepts = string.Empty;
                 bool firstDept = true;
 
-                if (chkSelectAll.Checked)
-                {
-                    selectedDepts = "0";
-                    //defaultDept = 0;
-                }
-                    
+                if (chkSelectAll.Checked)                
+                    selectedDepts = "0";                    
                 else
                 {
                     foreach (TreeNode oNode in tvDepts.Nodes)
@@ -234,8 +238,7 @@ namespace Wdw.UserManagement.v2.User_Management
                             }
                         }
                     }
-                }
-                                
+                }                                
 
                 int updatedSuccessFlag = DataLayer.UpdateUserAllocations(userLogin, selectedModules, selectedDepts, defaultDept, userName, userEmail);
                 if(updatedSuccessFlag > 0)
@@ -260,7 +263,9 @@ namespace Wdw.UserManagement.v2.User_Management
                 BusinessLayer.LogMessage(ex, "DataLayer.btnSubmit_Click");
             }
         }
+        #endregion
 
+        #region => Choose User Dropdown Changed Event <=
         protected void ddlSelectUser_SelectedIndexChanged(object sender, EventArgs e)
         {
             try
@@ -334,49 +339,15 @@ namespace Wdw.UserManagement.v2.User_Management
             {
                 BusinessLayer.LogMessage(ex, "User_ManagementUserControl.ddlSelectUser_SelectedIndexChanged");
             }
-        }        
-
-        private void UncheckSelectAll()
-        {
-            foreach (TreeNode oNode in tvDepts.Nodes)
-            {
-                if(!oNode.Checked)
-                {
-                    chkSelectAll.Checked = false;
-                    return;
-                }
-                foreach(TreeNode cNode in oNode.ChildNodes)
-                {
-                    if (!cNode.Checked)
-                    {
-                        chkSelectAll.Checked = false;
-                        return;
-                    }
-                }
-            }
         }
+        #endregion
 
+        #region => Reset Button Click Event <=
         protected void btnReset_Click(object sender, EventArgs e)
         {
             Response.Redirect(Request.RawUrl);
         }
-
-        protected void chkSelectAll_CheckedChanged(object sender, EventArgs e)
-        {
-            try
-            {                
-                //foreach (TreeNode oNode in tvDepts.Nodes)
-                //{
-                //    oNode.Checked = chkSelectAll.Checked;
-                //    CheckUncheckChildItems(oNode, chkSelectAll.Checked);
-                //}
-                // BusinessLayer.SortDropdown(ddlDefaultDept);
-            }
-            catch (Exception ex)
-            {
-                BusinessLayer.LogMessage(ex, "User_ManagementUserControl.chkSelectAll_CheckedChanged");                
-            }
-        }
+        #endregion        
 
         private void CheckUncheckChildItems(TreeNode oNode, bool toBeChecked)
         {
@@ -403,66 +374,21 @@ namespace Wdw.UserManagement.v2.User_Management
             }
         }
 
+        #region => TreeView Dept Clicked Event <=
         protected void btnHiddenPostBack_Click(object sender, EventArgs e)
         {
             try
-            {
-                //TreeNode nodeChecked = new TreeNode();
-                //bool nodeFound = false;
-                //foreach(TreeNode pNode in tvDepts.Nodes)
-                //{
-                //    if(pNode.Text.Equals(txtCheckedDeptText.Text) && pNode.Value.Equals(txtCheckedDeptValue.Text))
-                //    {
-                //        nodeChecked = pNode;
-                //        nodeFound = true;
-                //        break;
-                //    }
-                //    foreach(TreeNode cNode in pNode.ChildNodes)
-                //    {
-                //        if (cNode.Text.Equals(txtCheckedDeptText.Text) && cNode.Value.Equals(txtCheckedDeptValue.Text))
-                //        {
-                //            nodeChecked = cNode;
-                //            nodeFound = true;
-                //            break;
-                //        }
-                //    }
-                //    if (nodeFound)
-                //        break;
-
-                //}
-
-                //if (nodeFound)
-                //{
-                //    if (nodeChecked.Checked && nodeChecked.Depth > 0)
-                //    {
-                //        if (!ddlDefaultDept.Items.Contains(new ListItem(nodeChecked.Text, nodeChecked.Value)))
-                //            ddlDefaultDept.Items.Add(new ListItem(nodeChecked.Text, nodeChecked.Value));
-                //        if (nodeChecked.Value != "-1" && ddlDefaultDept.Items.Contains(new ListItem("No Department Selected", "-1")))
-                //        {
-                //            ddlDefaultDept.Items.Remove(new ListItem("No Department Selected", "-1"));
-                //        }
-                //    }
-                //    else if (!nodeChecked.Checked && nodeChecked.Depth > 0)
-                //    {
-                //        ddlDefaultDept.Items.Remove(new ListItem(nodeChecked.Text, nodeChecked.Value));
-                //        if (ddlDefaultDept.Items.Count == 0)
-                //        {
-                //            ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
-                //        }
-                //    }
-                //    BusinessLayer.SortDropdown(ddlDefaultDept);
-                //    UncheckSelectAll();
-                //} 
-                
+            {  
                 UpdateDeptSelections();
-
             }
             catch(Exception ex)
             {
                 BusinessLayer.LogMessage(ex, "User_ManagementUserControl.btnHiddenPostBack_Click");
             }
         }
+        #endregion
 
+        #region => New User Button Clicked Event <=
         protected void btnHiddenNewUserPostBack_Click(object sender, EventArgs e)
         {
             try
@@ -474,24 +400,7 @@ namespace Wdw.UserManagement.v2.User_Management
                 BusinessLayer.LogMessage(ex, "User_ManagementUserControl.btnHiddenNewUserPostBack_Click");
             }
         }
-
-        protected void btnHiddenSelectAllPostBack_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                BusinessLayer.LogMessage(new Exception("testing"), "testing");
-                foreach (TreeNode oNode in tvDepts.Nodes)
-                {
-                    oNode.Checked = chkSelectAll.Checked;
-                    CheckUncheckChildItems(oNode, chkSelectAll.Checked);
-                }
-                // BusinessLayer.SortDropdown(ddlDefaultDept);
-            }
-            catch (Exception ex)
-            {
-                BusinessLayer.LogMessage(ex, "User_ManagementUserControl.btnHiddenSelectAllPostBack_Click");
-            }
-        }
+        #endregion        
 
         protected void UpdateDeptSelections()
         {

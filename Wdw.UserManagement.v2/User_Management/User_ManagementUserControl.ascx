@@ -18,46 +18,18 @@
         var txtCheckedDeptText = document.getElementById('<%= txtCheckedDeptText.ClientID %>');
         var txtCheckedDeptValue = document.getElementById('<%= txtCheckedDeptValue.ClientID %>');
         
-        if (isChkBoxClick) {
-            console.log('2.0');
+        if (isChkBoxClick) {            
             var nodeText = getNextSibling(src).innerText || getNextSibling(src).innerHTML;
             txtCheckedDeptText.value = nodeText;
             var nodeValue = GetNodeValue(getNextSibling(src));
-            txtCheckedDeptValue.value = nodeValue;
-
-            //var parentTable = GetParentByTagName("table", src);            
-            //var nxtSibling = parentTable.nextSibling;            
-            ////check if nxt sibling is not null & is an element node
-            //if (nxtSibling && nxtSibling.nodeType == 1) {
-            //    //if node has children   
-            //    if (nxtSibling.tagName.toLowerCase() == "div") {
-            //        //check or uncheck children at all levels                    
-            //        console.log('3.0');
-            //        CheckUncheckChildren(parentTable.nextSibling, src.checked, ddlDefaultDept);
-            //        console.log('4.0');
-            //    }
-            //    else if (nxtSibling.tagName.toLowerCase() == "table") {
-            //        console.log("child node clicked....Do things here...");
-            //        CheckUncheckNode(src, src.checked, ddlDefaultDept);
-            //    }
-            //}
-
-        //check or uncheck parents at all levels
-        // CheckUncheckParents(src, src.checked);            
+            txtCheckedDeptValue.value = nodeValue;          
         }
-
 
         var o = window.event.srcElement;
         if (o.tagName == "INPUT" && o.type == "checkbox") {            
             __doPostBack('<%=btnHiddenPostBack.UniqueID %>', null);       
-        }        
-
-        return false;
-
-        <%--if (!src.checked) {
-            var chkSelectAll = document.getElementById('<%= chkSelectAll.ClientID %>');
-            chkSelectAll.checked = false;
-        }--%>
+        } 
+        return false;        
     } 
 
     function CheckUncheckChildren(childContainer, check, ddlDefaultDept) {
@@ -315,9 +287,7 @@ function btnSubmit_ClientClick(){
     {
         prm.add_beginRequest(BeginRequestHandler);
         prm.add_endRequest(EndRequestHandler);
-    }
-
-    
+    }    
 
      function NewUser_PostBack() {
          var ppNewUser = document.getElementById('<%= ppNewUser.ClientID %>');
@@ -388,8 +358,7 @@ function btnSubmit_ClientClick(){
                         <asp:CheckBox ID="chkSelectAll" Text="All Departments" onclick="chkSelectAll_ClientClicked(this.checked);" CssClass="chkSelectAll" AutoPostBack="true" runat="server" />                        
                         <asp:TreeView ID="tvDepts"  runat="server" ForeColor="Black" Font-Size="12pt" ShowCheckBoxes="All" OnClick="OnTreeClick(event)"></asp:TreeView>
                         <span style="display: none;">
-                            <asp:Button ID="btnHiddenPostBack" runat="server" Text="Hidden" OnClick="btnHiddenPostBack_Click" />
-                            <asp:Button ID="btnHiddenSelectAllPostBack" runat="server" Text="Hidden" OnClick="btnHiddenSelectAllPostBack_Click" />
+                            <asp:Button ID="btnHiddenPostBack" runat="server" Text="Hidden" OnClick="btnHiddenPostBack_Click" />                            
                             <asp:TextBox ID="txtCheckedDeptText" runat="server" Text=""></asp:TextBox>
                             <asp:TextBox ID="txtCheckedDeptValue" runat="server" Text=""></asp:TextBox>
                             <asp:Button ID="btnHiddenNewUserPostBack" runat="server" Text="HiddenNewUser" OnClick="btnHiddenNewUserPostBack_Click" />
