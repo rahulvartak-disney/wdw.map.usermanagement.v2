@@ -463,6 +463,12 @@ namespace Wdw.UserManagement.v2.User_Management
                                 }
                             }                            
                         }
+                        //if (chkSelectAll.Checked)
+                        //{
+                        //    chkSelectAll.CheckedChanged -= ChckedChanged;
+                        //    chkSelectAll.Checked = false;
+                        //    chkSelectAll.CheckedChanged += ChckedChanged;
+                        //}
                     }
                     else
                     {
@@ -484,11 +490,19 @@ namespace Wdw.UserManagement.v2.User_Management
                                 {
                                     ddlDefaultDept.Items.Add(new ListItem("No Department Selected", "-1"));
                                 }
+                                //if (parentNode.Checked) parentNode.Checked = false;
+                                //if (chkSelectAll.Checked)
+                                //{
+                                //    chkSelectAll.CheckedChanged -= ChckedChanged;
+                                //    chkSelectAll.Checked = false;
+                                //    chkSelectAll.CheckedChanged += ChckedChanged;
+                                //}
                             }
                         }
                     }                   
                 }
 
+                CheckUncheckParentNodes();
                 BusinessLayer.SortDropdown(ddlDefaultDept);
 
                 ListItem selectedItem = ddlDefaultDept.Items.FindByValue(selectedDefaultDept);
@@ -613,13 +627,20 @@ namespace Wdw.UserManagement.v2.User_Management
 
         protected void CheckUncheckParentNodes()
         {
-            foreach(TreeNode pNode in tvDepts.Nodes)
+            bool allDeptsChecked = true;
+            foreach (TreeNode pNode in tvDepts.Nodes)
             {
                 bool toBeChecked = true;
                 foreach (TreeNode cNode in pNode.ChildNodes)
                     if (!cNode.Checked) toBeChecked = false;
                 pNode.Checked = toBeChecked;
+                if (!toBeChecked)
+                    allDeptsChecked = false;
             }
+            chkSelectAll.CheckedChanged -= ChckedChanged;
+            chkSelectAll.Checked = allDeptsChecked;
+            chkSelectAll.CheckedChanged += ChckedChanged;
+
         }
     }
 }
